@@ -7,7 +7,7 @@ const path = require('node:path');
 const { DatabaseSync } = require('node:sqlite');
 
 const ROOT = __dirname;
-const PUBLIC = path.join(ROOT, 'public');
+const PUBLIC = fs.existsSync(path.join(ROOT, 'public', 'index.html')) ? path.join(ROOT, 'public') : ROOT;
 const DB_PATH = process.env.DB_PATH || path.join(ROOT, 'data.db');
 const PORT = process.env.PORT || 3000;
 

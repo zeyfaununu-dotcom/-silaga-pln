@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berita Acara Perbaikan Gangguan – SILAGA</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body{background:var(--surface)}
+  .toolbar{position:sticky;top:0;z-index:20;background:var(--canvas);border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;padding:12px 20px}
+  .sheet{background:#fff;max-width:800px;margin:28px auto;padding:56px 60px;border:1px solid var(--border);
+    border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 4px 12px rgba(0,0,0,.04)}
+  .kop{display:flex;align-items:center;gap:16px;border-bottom:3px double #2C2C2B;padding-bottom:16px;margin-bottom:8px}
+  .kop .logo{width:56px;height:56px;flex:none}
+  .kop h2{margin:0;font-size:20px;letter-spacing:.02em}
+  .kop p{margin:2px 0 0;color:var(--text2);font-size:13px}
+  .kop .no{margin-left:auto;text-align:right;font-size:13px;color:var(--text2)}
+  .doc-title{text-align:center;margin:22px 0 4px}
+  .doc-title h1{font-size:19px;margin:0;text-transform:uppercase;letter-spacing:.03em;text-decoration:underline}
+  .intro{font-size:14px;margin:20px 0 8px}
+  table.doc{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 4px}
+  table.doc td{padding:5px 6px;vertical-align:top}
+  table.doc td.k{width:210px;color:var(--text2)}
+  table.doc td.s{width:16px}
+  .closing{font-size:14px;margin:22px 0 8px}
+  .sign{display:flex;justify-content:space-between;gap:24px;margin-top:26px}
+  .sign .box{flex:1;text-align:center;font-size:14px}
+  .sign .box .role{color:var(--text2)}
+  .sign .box .space{height:70px}
+  .sign .box .name{font-weight:600;text-decoration:underline}
+  .catatan{margin-top:30px;font-size:12px;color:var(--text2);border-top:1px solid var(--border);padding-top:12px}
+  .catatan b{color:var(--text)}
+  .muted{color:var(--text2)}
+  @media print{
+    .toolbar{display:none}
+    body{background:#fff}
+    .sheet{margin:0;border:none;box-shadow:none;max-width:none;padding:0}
+    @page{size:A4;margin:18mm}
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <a class="brand" href="dashboard.html" style="font-size:14px">← Kembali ke Dashboard</a>
+  <button class="btn" onclick="window.print()">🖨️ Unduh / Cetak PDF</button>
+</div>
+
+<div class="sheet">
+  <p class="muted" id="loading">Memuat dokumen…</p>
+  <div id="doc" style="display:none">
+    <div class="kop">
+      <svg class="logo" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect width="56" height="56" rx="12" fill="#2783DE"/><path d="M31 11l-14 19h9l-3 15 14-20h-9l3-14z" fill="#FFC20E"/></svg>
+      <div>
+        <h2>PT PLN (PERSERO)</h2>
+        <p>Unit Induk Distribusi Jawa Barat</p>
+        <p id="kop-unit" class="muted">UP3 Purwakarta</p>
+      </div>
+      <div class="no">No.<br><b id="no_ba"></b></div>
+    </div>
+
+    <div class="doc-title"><h1>Berita Acara Perbaikan Gangguan</h1></div>
+
+    <p class="intro">Berdasarkan Laporan Gangguan No. <b id="laporan_no"></b>, telah dilaksanakan perbaikan gangguan tenaga listrik dengan rincian sebagai berikut:</p>
+
+    <table class="doc">
+      <tr><td class="k">Nama Pelanggan</td><td class="s">:</td><td id="nama_pelanggan"></td></tr>
+      <tr><td class="k">Alamat</td><td class="s">:</td><td id="alamat"></td></tr>
+      <tr><td class="k">Tanggal</td><td class="s">:</td><td id="tanggal"></td></tr>
+      <tr><td class="k">Segel Dibuka / Kode</td><td class="s">:</td><td id="segel"></td></tr>
+      <tr><td class="k">Pembatas Diganti Dengan</td><td class="s">:</td><td id="pembatas"></td></tr>
+      <tr><td class="k">Jenis Perbaikan</td><td class="s">:</td><td id="jenis"></td></tr>
+      <tr><td class="k">Jam</td><td class="s">:</td><td id="jam"></td></tr>
+    </table>
+
+    <p class="closing">Demikian Berita Acara ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.</p>
+
+    <div class="sign">
+      <div class="box">
+        <div class="role">Petugas Pembuat Laporan</div>
+        <div class="space"></div>
+        <div class="name" id="pembuat"></div>
+      </div>
+      <div class="box">
+        <div class="role">Pelanggan / Penghuni</div>
+        <div class="space"></div>
+        <div class="name" id="ttd"></div>
+      </div>
+    </div>
+
+    <div class="catatan">
+      <b>CATATAN:</b>
+      <div>1. Mohon Berita Acara Perbaikan Gangguan ini agar dijaga tidak hilang.</div>
+      <div>2. Untuk perbaikan kerusakan/gangguan atas laporan pelanggan/penghuni termasuk penggantian Sambungan Tenaga Listrik (SL) atau instalasi milik PT PLN (Persero), <b>Pelanggan/Penghuni tidak perlu membayar</b>.</div>
+      <div>3. Perbaikan kerusakan pada instalasi pelanggan bukan tanggung jawab PT PLN (Persero).</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function esc(s){return (s==null||s==='')?'-':String(s);}
+function fmt(s){ if(!s) return '-'; const d=new Date(s); return isNaN(d)? s : d.toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'}); }
+function fmtd(s){ if(!s) return '-'; const d=new Date(s); return isNaN(d)? s : d.toLocaleDateString('id-ID',{dateStyle:'long'}); }
+const id=new URLSearchParams(location.search).get('id');
+fetch('/api/berita-acara/'+id).then(r=>{if(!r.ok)throw new Error();return r.json();}).then(b=>{
+  const set=(k,v)=>{document.getElementById(k).textContent=v;};
+  set('no_ba',esc(b.no_ba)); set('laporan_no',esc(b.laporan_no));
+  if(b.laporan_unit) document.getElementById('kop-unit').textContent='UP3 Purwakarta — ULP '+b.laporan_unit;
+  set('nama_pelanggan',esc(b.nama_pelanggan)); set('alamat',esc(b.alamat));
+  set('tanggal',fmtd(b.tanggal)); set('segel',esc(b.segel_kode));
+  var pmb = esc(b.pembatas_ampere); if(b.pembatas_tanggal){ pmb += ' (tgl '+fmtd(b.pembatas_tanggal)+')'; }
+  set('pembatas',pmb);
+  set('jenis',esc(b.jenis_perbaikan)); set('jam',b.jam?esc(b.jam):'-');
+  set('pembuat',esc(b.petugas_pembuat)); set('ttd',esc(b.ttd_pelanggan));
+  document.getElementById('loading').style.display='none';
+  document.getElementById('doc').style.display='block';
+}).catch(()=>{ document.getElementById('loading').textContent='Dokumen tidak ditemukan.'; });
+</script>
+</body>
+</html>

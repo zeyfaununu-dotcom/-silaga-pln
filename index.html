@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SILAGA – PT PLN (Persero) UP3 Purwakarta</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="container">
+    <div class="t-left"><span class="dot"></span> PT PLN (PERSERO) &middot; UP3 PURWAKARTA</div>
+    <div class="t-right">Melayani gangguan &middot; Call Center PLN 123</div>
+  </div>
+</div>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html">
+      <svg class="logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="10" fill="#179BD7"/><path d="M22 8l-10 13h6.5l-2.2 11 10-14H19.8L22 8z" fill="#FFC20E"/></svg>
+      <span class="b-txt"><b>SILAGA</b><small>Sistem Laporan Gangguan &middot; UP3 Purwakarta</small></span>
+    </a>
+    <nav class="nav">
+      <a href="lapor.html">Laporan Gangguan</a>
+      <a href="petugas.html">Berita Acara</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero">
+    <span class="badge">⚡ Digitalisasi Formulir Gangguan PLN</span>
+    <h1>Catat gangguan &amp; sahkan perbaikan<br>dalam satu alur digital</h1>
+    <p>Menggantikan formulir kertas. <b>Petugas</b> mengisi Laporan Gangguan, lalu <b>Pelanggan</b> menandatangani Berita Acara Perbaikan — semua tersimpan otomatis di database.</p>
+    <div class="gov">
+      <span>📍 Kabupaten Purwakarta, Jawa Barat</span>
+      <span>🏢 UP3 Purwakarta</span>
+      <span>☎️ PLN 123</span>
+    </div>
+  </section>
+
+  <section class="grid grid-2" style="margin-bottom:40px">
+    <a class="card role-card" href="lapor.html">
+      <div class="ico orange">🛠️</div>
+      <h3>Saya Petugas</h3>
+      <p>Isi <b>Laporan Gangguan</b>: data pelanggan, waktu padam, penyebab, tindakan perbaikan, dan petugas pelaksana.</p>
+      <span class="cta">Buat Laporan Gangguan →</span>
+    </a>
+    <a class="card role-card" href="petugas.html">
+      <div class="ico blue">👤</div>
+      <h3>Saya Pelanggan</h3>
+      <p>Isi &amp; tandatangani <b>Berita Acara Perbaikan</b> sebagai bukti bahwa gangguan telah selesai ditangani.</p>
+      <span class="cta">Isi Berita Acara →</span>
+    </a>
+  </section>
+
+  <section style="margin-bottom:60px">
+    <p class="section-title">Ringkasan sistem</p>
+    <div class="grid grid-4" id="stats">
+      <div class="card stat blue"><div class="n" id="s-laporan">–</div><div class="l">Total Laporan</div></div>
+      <div class="card stat orange"><div class="n" id="s-terbuka">–</div><div class="l">Belum Selesai</div></div>
+      <div class="card stat green"><div class="n" id="s-selesai">–</div><div class="l">Selesai</div></div>
+      <div class="card stat blue"><div class="n" id="s-ba">–</div><div class="l">Berita Acara</div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <b>SILAGA</b> — Digitalisasi Laporan &amp; Berita Acara Gangguan<br>
+  PT PLN (Persero) UID Jawa Barat &middot; UP3 Purwakarta &middot; Call Center PLN 123
+</footer>
+
+<script>
+fetch('/api/stats').then(r=>r.json()).then(d=>{
+  document.getElementById('s-laporan').textContent=d.laporan;
+  document.getElementById('s-terbuka').textContent=d.terbuka;
+  document.getElementById('s-selesai').textContent=d.selesai;
+  document.getElementById('s-ba').textContent=d.berita_acara;
+}).catch(()=>{});
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Gangguan – SILAGA</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body{background:var(--surface)}
+  .toolbar{position:sticky;top:0;z-index:20;background:var(--canvas);border-bottom:1px solid var(--border);
+    display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 20px;flex-wrap:wrap}
+  .sheet{background:#fff;max-width:800px;margin:28px auto;padding:52px 58px;border:1px solid var(--border);
+    border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 4px 12px rgba(0,0,0,.04)}
+  .kop{display:flex;align-items:center;gap:16px;border-bottom:3px double #1E2A38;padding-bottom:14px;margin-bottom:8px}
+  .kop .logo{width:56px;height:56px;flex:none}
+  .kop h2{margin:0;font-size:19px;letter-spacing:.02em;color:#1E2A38}
+  .kop p{margin:2px 0 0;color:var(--text2);font-size:13px}
+  .kop .no{margin-left:auto;text-align:right;font-size:13px;color:var(--text2)}
+  .doc-title{text-align:center;margin:20px 0 4px}
+  .doc-title h1{font-size:19px;margin:0;text-transform:uppercase;letter-spacing:.03em;text-decoration:underline;color:#1E2A38}
+  .doc-title .sub{color:var(--text2);font-size:12.5px;margin-top:3px}
+  .sec{font-weight:800;font-size:12px;color:var(--blue-2);text-transform:uppercase;letter-spacing:.05em;margin:20px 0 4px;border-bottom:1px solid var(--border);padding-bottom:4px}
+  table.doc{width:100%;border-collapse:collapse;font-size:13.5px;margin:2px 0}
+  table.doc td{padding:4px 6px;vertical-align:top}
+  table.doc td.k{width:220px;color:var(--text2)}
+  table.doc td.s{width:14px}
+  .closing{font-size:13.5px;margin:22px 0 8px}
+  .sign{display:flex;justify-content:space-between;gap:16px;margin-top:24px}
+  .sign .box{flex:1;text-align:center;font-size:13px}
+  .sign .box .role{color:var(--text2);min-height:32px}
+  .sign .box .space{height:64px}
+  .sign .box .name{font-weight:600;text-decoration:underline}
+  .muted{color:var(--text2)}
+  @media print{
+    .toolbar{display:none}
+    body{background:#fff}
+    .sheet{margin:0;border:none;box-shadow:none;max-width:none;padding:0}
+    @page{size:A4;margin:16mm}
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <a class="brand" href="dashboard.html" style="font-size:14px">← Kembali ke Dashboard</a>
+  <button class="btn" onclick="window.print()">🖨️ Unduh / Cetak PDF</button>
+</div>
+
+<div class="sheet">
+  <p class="muted" id="loading">Memuat dokumen…</p>
+  <div id="doc" style="display:none">
+    <div class="kop">
+      <svg class="logo" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg"><rect width="56" height="56" rx="12" fill="#179BD7"/><path d="M31 11l-14 19h9l-3 15 14-20h-9l3-14z" fill="#FFC20E"/></svg>
+      <div>
+        <h2>PT PLN (PERSERO)</h2>
+        <p>Unit Induk Distribusi Jawa Barat</p>
+        <p id="kop-unit" class="muted">UP3 Purwakarta</p>
+      </div>
+      <div class="no">No.<br><b id="no_laporan"></b></div>
+    </div>
+
+    <div class="doc-title"><h1>Laporan Gangguan</h1><div class="sub">Formulir Pencatatan Gangguan Tenaga Listrik</div></div>
+
+    <div class="sec">Data Laporan</div>
+    <table class="doc">
+      <tr><td class="k">Dilaporkan Oleh</td><td class="s">:</td><td id="dilaporkan_oleh"></td></tr>
+      <tr><td class="k">Tanggal / Jam Laporan</td><td class="s">:</td><td id="tgl_jam"></td></tr>
+      <tr><td class="k">Cara Melapor</td><td class="s">:</td><td id="cara_lapor"></td></tr>
+      <tr><td class="k">No. Telepon Pelapor</td><td class="s">:</td><td id="no_telepon"></td></tr>
+      <tr><td class="k">Isi Laporan / Keluhan</td><td class="s">:</td><td id="isi_laporan"></td></tr>
+    </table>
+
+    <div class="sec">Data Pelanggan</div>
+    <table class="doc">
+      <tr><td class="k">Nama Pelanggan</td><td class="s">:</td><td id="nama_pelanggan"></td></tr>
+      <tr><td class="k">Alamat</td><td class="s">:</td><td id="alamat"></td></tr>
+      <tr><td class="k">No. Kontrak / ID Pelanggan</td><td class="s">:</td><td id="no_kontrak"></td></tr>
+      <tr><td class="k">No. / Nama Jurusan</td><td class="s">:</td><td id="jurusan"></td></tr>
+      <tr><td class="k">Unit / ULP</td><td class="s">:</td><td id="unit"></td></tr>
+      <tr><td class="k">Jumlah Pelanggan Terganggu</td><td class="s">:</td><td id="jumlah_pelanggan"></td></tr>
+    </table>
+
+    <div class="sec">Waktu Padam &amp; Gardu</div>
+    <table class="doc">
+      <tr><td class="k">Mulai Padam</td><td class="s">:</td><td id="mulai_padam"></td></tr>
+      <tr><td class="k">No. Gardu (padam)</td><td class="s">:</td><td id="gardu_padam"></td></tr>
+      <tr><td class="k">Menyala Kembali</td><td class="s">:</td><td id="menyala_kembali"></td></tr>
+      <tr><td class="k">No. Gardu (nyala)</td><td class="s">:</td><td id="gardu_nyala"></td></tr>
+    </table>
+
+    <div class="sec">Penyebab &amp; Tindakan</div>
+    <table class="doc">
+      <tr><td class="k">Penyebab Padam</td><td class="s">:</td><td id="penyebab_padam"></td></tr>
+      <tr><td class="k">Perbaikan Dilakukan</td><td class="s">:</td><td id="perbaikan_dilakukan"></td></tr>
+      <tr><td class="k">Kondisi Tegangan</td><td class="s">:</td><td id="kondisi_tegangan"></td></tr>
+      <tr><td class="k">Nomor Kode Pemadam</td><td class="s">:</td><td id="kode_pemadam"></td></tr>
+      <tr><td class="k">Status</td><td class="s">:</td><td id="status"></td></tr>
+    </table>
+
+    <p class="closing">Demikian Laporan Gangguan ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.</p>
+
+    <div class="sign">
+      <div class="box">
+        <div class="role">Petugas Pembuat Laporan</div>
+        <div class="space"></div>
+        <div class="name" id="petugas_pembuat"></div>
+      </div>
+      <div class="box">
+        <div class="role">Petugas Pelaksana</div>
+        <div class="space"></div>
+        <div class="name" id="petugas_pelaksana"></div>
+      </div>
+      <div class="box">
+        <div class="role">Pejabat Petugas Piket</div>
+        <div class="space"></div>
+        <div class="name" id="pejabat_piket"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function esc(s){return (s==null||s==='')?'-':String(s);}
+function fmt(s){ if(!s) return '-'; const d=new Date(s); return isNaN(d)? s : d.toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'}); }
+function fmtd(s){ if(!s) return '-'; const d=new Date(s); return isNaN(d)? s : d.toLocaleDateString('id-ID',{dateStyle:'long'}); }
+const id=new URLSearchParams(location.search).get('id');
+fetch('/api/laporan/'+id).then(r=>{if(!r.ok)throw new Error();return r.json();}).then(l=>{
+  const set=(k,v)=>{document.getElementById(k).textContent=v;};
+  set('no_laporan',esc(l.no_laporan));
+  if(l.unit) document.getElementById('kop-unit').textContent='UP3 Purwakarta — ULP '+l.unit;
+  set('dilaporkan_oleh',esc(l.dilaporkan_oleh));
+  var tj=fmtd(l.tanggal_laporan); if(l.pada_jam){ tj+=' pukul '+l.pada_jam; } set('tgl_jam',tj);
+  set('cara_lapor',esc(l.cara_lapor)); set('no_telepon',esc(l.no_telepon));
+  set('isi_laporan',esc(l.isi_laporan));
+  set('nama_pelanggan',esc(l.nama_pelanggan)); set('alamat',esc(l.alamat));
+  set('no_kontrak',esc(l.no_kontrak)); set('jurusan',esc(l.jurusan));
+  set('unit',esc(l.unit)); set('jumlah_pelanggan',l.jumlah_pelanggan!=null&&l.jumlah_pelanggan!==''?l.jumlah_pelanggan+' pelanggan':'-');
+  set('mulai_padam',fmt(l.mulai_padam)); set('gardu_padam',esc(l.gardu_padam));
+  set('menyala_kembali',fmt(l.menyala_kembali)); set('gardu_nyala',esc(l.gardu_nyala));
+  set('penyebab_padam',esc(l.penyebab_padam)); set('perbaikan_dilakukan',esc(l.perbaikan_dilakukan));
+  set('kondisi_tegangan',esc(l.kondisi_tegangan)); set('kode_pemadam',esc(l.kode_pemadam));
+  set('status',esc(l.status));
+  set('petugas_pembuat',esc(l.petugas_pembuat)); set('petugas_pelaksana',esc(l.petugas_pelaksana));
+  set('pejabat_piket',esc(l.pejabat_piket));
+  document.getElementById('loading').style.display='none';
+  document.getElementById('doc').style.display='block';
+}).catch(()=>{ document.getElementById('loading').textContent='Dokumen tidak ditemukan.'; });
+</script>
+</body>
+</html>

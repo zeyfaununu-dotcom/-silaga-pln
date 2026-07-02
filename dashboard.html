@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – SILAGA</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="container">
+    <div class="t-left"><span class="dot"></span> PT PLN (PERSERO) &middot; UP3 PURWAKARTA</div>
+    <div class="t-right">Rekap Data &middot; Call Center PLN 123</div>
+  </div>
+</div>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html">
+      <svg class="logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="10" fill="#179BD7"/><path d="M22 8l-10 13h6.5l-2.2 11 10-14H19.8L22 8z" fill="#FFC20E"/></svg>
+      <span class="b-txt"><b>SILAGA</b><small>Sistem Laporan Gangguan &middot; UP3 Purwakarta</small></span>
+    </a>
+    <nav class="nav">
+      <a href="lapor.html">Laporan Gangguan</a>
+      <a href="petugas.html">Berita Acara</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div style="padding:30px 0 8px">
+    <h1 style="margin:0 0 4px;font-size:27px;color:var(--navy)">Dashboard Gangguan</h1>
+    <p style="margin:0;color:var(--text2)">Rekap Laporan Gangguan (petugas) dan Berita Acara Perbaikan (pelanggan) — UP3 Purwakarta.</p>
+  </div>
+
+  <div class="grid grid-4" style="margin:20px 0 36px">
+    <div class="card stat blue"><div class="n" id="s-laporan">–</div><div class="l">Total Laporan</div></div>
+    <div class="card stat orange"><div class="n" id="s-terbuka">–</div><div class="l">Belum Selesai</div></div>
+    <div class="card stat green"><div class="n" id="s-selesai">–</div><div class="l">Selesai</div></div>
+    <div class="card stat blue"><div class="n" id="s-ba">–</div><div class="l">Berita Acara</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-head"><div class="ico orange" style="width:34px;height:34px;font-size:17px">🛠️</div><h3>Laporan Gangguan (Petugas)</h3></div>
+    <div class="table-scroll">
+      <table id="tbl-laporan">
+        <thead><tr><th>No. Laporan</th><th>Nama</th><th>Unit</th><th>Alamat</th><th>Tgl Laporan</th><th>Petugas</th><th>Status</th><th>Dokumen</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty-laporan" style="display:none">Belum ada laporan gangguan.</div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-head"><div class="ico blue" style="width:34px;height:34px;font-size:17px">👤</div><h3>Berita Acara Perbaikan (Pelanggan)</h3></div>
+    <div class="table-scroll">
+      <table id="tbl-ba">
+        <thead><tr><th>No. BA</th><th>Lap. No.</th><th>Nama Pelanggan</th><th>Jenis Perbaikan</th><th>Tanggal</th><th>TTD Pelanggan</th><th>Status</th><th>Dokumen</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty-ba" style="display:none">Belum ada berita acara.</div>
+  </div>
+</main>
+<footer class="site"><b>SILAGA</b> &middot; PT PLN (Persero) UP3 Purwakarta &middot; Call Center PLN 123</footer>
+
+<script>
+function esc(s){return (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function fmt(s){ if(!s) return '-'; const d=new Date(s); return isNaN(d)? esc(s) : d.toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}); }
+function fmtd(s){ if(!s) return '-'; const d=new Date(s); return isNaN(d)? esc(s) : d.toLocaleDateString('id-ID',{dateStyle:'medium'}); }
+function pill(st){ const g=st==='Selesai'?'green':(st==='Dalam perbaikan'?'blue':'orange'); return '<span class="pill '+g+'">'+esc(st||'-')+'</span>'; }
+
+const s_laporan=document.getElementById('s-laporan'),s_terbuka=document.getElementById('s-terbuka'),
+  s_selesai=document.getElementById('s-selesai'),s_ba=document.getElementById('s-ba');
+fetch('/api/stats').then(r=>r.json()).then(d=>{
+  s_laporan.textContent=d.laporan; s_terbuka.textContent=d.terbuka;
+  s_selesai.textContent=d.selesai; s_ba.textContent=d.berita_acara;
+}).catch(()=>{});
+
+fetch('/api/laporan').then(r=>r.json()).then(rows=>{
+  const tb=document.querySelector('#tbl-laporan tbody');
+  if(!rows.length){document.getElementById('empty-laporan').style.display='block';document.getElementById('tbl-laporan').style.display='none';return;}
+  tb.innerHTML=rows.map(l=>'<tr><td><b>'+esc(l.no_laporan)+'</b></td><td>'+esc(l.nama_pelanggan)+'</td><td>'+esc(l.unit)+'</td><td>'+esc(l.alamat)+'</td><td>'+fmtd(l.tanggal_laporan)+'</td><td>'+esc(l.petugas_pembuat)+'</td><td>'+pill(l.status)+'</td><td><a href="laporan.html?id='+l.id+'">🖨️ Cetak PDF</a></td></tr>').join('');
+}).catch(()=>{});
+
+fetch('/api/berita-acara').then(r=>r.json()).then(rows=>{
+  const tb=document.querySelector('#tbl-ba tbody');
+  if(!rows.length){document.getElementById('empty-ba').style.display='block';document.getElementById('tbl-ba').style.display='none';return;}
+  tb.innerHTML=rows.map(b=>'<tr><td><b>'+esc(b.no_ba)+'</b></td><td>'+esc(b.laporan_no||'-')+'</td><td>'+esc(b.nama_pelanggan)+'</td><td>'+esc(b.jenis_perbaikan)+'</td><td>'+fmtd(b.tanggal)+'</td><td>'+esc(b.ttd_pelanggan)+'</td><td>'+pill(b.status)+'</td><td><a href="ba.html?id='+b.id+'">🖨️ Cetak PDF</a></td></tr>').join('');
+}).catch(()=>{});
+</script>
+</body>
+</html>

@@ -5,7 +5,7 @@
   "description": "SILAGA - Sistem Laporan Gangguan Listrik PLN (laporan pelanggan + berita acara petugas)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node --experimental-sqlite server.js"
   },
   "engines": {
     "node": ">=22.5.0"
